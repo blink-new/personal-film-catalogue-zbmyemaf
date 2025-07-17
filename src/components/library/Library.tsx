@@ -101,6 +101,8 @@ export function Library() {
       setMovies(movieList);
     } catch (error) {
       console.error('Failed to load movies:', error);
+      // Set empty array when database is not available
+      setMovies([]);
     } finally {
       setLoading(false);
     }

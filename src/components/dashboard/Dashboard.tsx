@@ -28,7 +28,7 @@ export function Dashboard() {
 
   const loadDashboardData = async () => {
     try {
-      // Load movies from database
+      // Try to load movies from database
       const movies = await blink.db.movies.list({
         orderBy: { dateAdded: 'desc' },
         limit: 100
@@ -76,6 +76,20 @@ export function Dashboard() {
       setRecentMovies(movies.slice(0, 6));
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
+      
+      // Set empty stats when database is not available
+      const emptyStats: LibraryStats = {
+        totalMovies: 0,
+        totalSize: 0,
+        genres: {},
+        formats: {},
+        qualities: {},
+        recentlyAdded: [],
+        mostWatched: []
+      };
+      
+      setStats(emptyStats);
+      setRecentMovies([]);
     } finally {
       setLoading(false);
     }

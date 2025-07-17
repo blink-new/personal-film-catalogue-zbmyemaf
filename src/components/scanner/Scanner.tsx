@@ -121,7 +121,11 @@ export function Scanner() {
       alert(`Successfully added ${scanResults.length} movies to your library!`);
     } catch (error) {
       console.error('Failed to save movies:', error);
-      alert('Failed to save movies to library');
+      if (error.message?.includes('Database for project') && error.message?.includes('not found')) {
+        alert('Database not set up yet. Please set up your database first to save movies to your library.');
+      } else {
+        alert('Failed to save movies to library');
+      }
     }
   };
 

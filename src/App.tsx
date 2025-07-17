@@ -3,12 +3,15 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { Dashboard } from '@/components/dashboard/Dashboard';
 import { Library } from '@/components/library/Library';
 import { Scanner } from '@/components/scanner/Scanner';
+import { DatabaseSetup } from '@/components/setup/DatabaseSetup';
 import { blink } from '@/blink/client';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [databaseReady, setDatabaseReady] = useState(false);
+  const [checkingDatabase, setCheckingDatabase] = useState(true);
 
   useEffect(() => {
     const unsubscribe = blink.auth.onAuthStateChanged((state) => {
@@ -20,13 +23,22 @@ function App() {
 
   useEffect(() => {
     if (user) {
-      initializeDatabase();
+      checkDatabase();
     }
   }, [user]);
 
-  const initializeDatabase = async () => {
-    // Database will be created automatically when first movie is added
-    console.log('Database initialization ready');
+  const checkDatabase = async () => {
+    setCheckingDatabase(true);
+    try {
+      // Try to query the movies table to see if database exists
+      await blink.db.movies.list({ limit: 1 });
+      setDatabaseReady(true);
+    } catch (error) {
+      console.log('Database not ready:', error);
+      setDatabaseReady(false);
+    } finally {
+      setCheckingDatabase(false);
+    }
   };
 
   const renderContent = () => {
@@ -56,12 +68,14 @@ function App() {
     }
   };
 
-  if (loading) {
+  if (loading || checkingDatabase) {
     return (
       <div className="h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground">
+            {loading ? 'Loading...' : 'Checking database...'}
+          </p>
         </div>
       </div>
     );
@@ -74,6 +88,14 @@ function App() {
           <h1 className="text-2xl font-bold mb-4">Please sign in</h1>
           <p className="text-muted-foreground">You need to be signed in to use the Film Catalogue Manager</p>
         </div>
+      </div>
+    );
+  }
+
+  if (!databaseReady) {
+    return (
+      <div className="h-screen flex items-center justify-center p-8">
+        <DatabaseSetup />
       </div>
     );
   }
