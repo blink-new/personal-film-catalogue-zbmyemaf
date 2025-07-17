@@ -5,6 +5,7 @@ import { Library } from '@/components/library/Library';
 import { Scanner } from '@/components/scanner/Scanner';
 import { DatabaseSetup } from '@/components/setup/DatabaseSetup';
 import { blink } from '@/blink/client';
+import { isDemoMode } from '@/services/demoData';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -30,6 +31,13 @@ function App() {
   const checkDatabase = async () => {
     setCheckingDatabase(true);
     try {
+      // Check if we're in demo mode first
+      if (isDemoMode()) {
+        setDatabaseReady(true);
+        setCheckingDatabase(false);
+        return;
+      }
+
       // Try to query the movies table to see if database exists
       await blink.db.movies.list({ limit: 1 });
       setDatabaseReady(true);

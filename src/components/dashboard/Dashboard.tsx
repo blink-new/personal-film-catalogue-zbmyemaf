@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { blink } from '@/blink/client';
 import type { Movie, LibraryStats } from '@/types/movie';
+import { demoMovies, getDemoStats, isDemoMode } from '@/services/demoData';
 
 export function Dashboard() {
   const [stats, setStats] = useState<LibraryStats | null>(null);
@@ -28,6 +29,16 @@ export function Dashboard() {
 
   const loadDashboardData = async () => {
     try {
+      // Check if we're in demo mode
+      if (isDemoMode()) {
+        // Use demo data
+        const demoStats = getDemoStats();
+        setStats(demoStats);
+        setRecentMovies(demoMovies.slice(0, 6));
+        setLoading(false);
+        return;
+      }
+
       // Try to load movies from database
       const movies = await blink.db.movies.list({
         orderBy: { dateAdded: 'desc' },

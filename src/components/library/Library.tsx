@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/select';
 import { blink } from '@/blink/client';
 import type { Movie } from '@/types/movie';
+import { demoMovies, isDemoMode } from '@/services/demoData';
 
 type ViewMode = 'grid' | 'list';
 type SortBy = 'title' | 'year' | 'dateAdded' | 'rating' | 'watchCount';
@@ -95,6 +96,14 @@ export function Library() {
 
   const loadMovies = async () => {
     try {
+      // Check if we're in demo mode
+      if (isDemoMode()) {
+        // Use demo data
+        setMovies(demoMovies);
+        setLoading(false);
+        return;
+      }
+
       const movieList = await blink.db.movies.list({
         orderBy: { title: 'asc' }
       });

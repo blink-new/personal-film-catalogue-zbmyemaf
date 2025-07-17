@@ -7,10 +7,13 @@ import {
   Film,
   BarChart3,
   Search,
-  Filter
+  Filter,
+  Play
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { isDemoMode } from '@/services/demoData';
 
 interface SidebarProps {
   activeTab: string;
@@ -34,10 +37,16 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
           <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
             <Film className="w-5 h-5 text-accent-foreground" />
           </div>
-          <div>
+          <div className="flex-1">
             <h1 className="font-semibold text-lg">Film Catalogue</h1>
             <p className="text-sm text-muted-foreground">Manager</p>
           </div>
+          {isDemoMode() && (
+            <Badge variant="secondary" className="text-xs">
+              <Play className="w-3 h-3 mr-1" />
+              Demo
+            </Badge>
+          )}
         </div>
       </div>
 
