@@ -42,8 +42,10 @@ function App() {
       await blink.db.movies.list({ limit: 1 });
       setDatabaseReady(true);
     } catch (error) {
-      console.log('Database not ready:', error);
-      setDatabaseReady(false);
+      console.log('Database not available, falling back to demo mode:', error);
+      // Automatically enable demo mode when database is not available
+      localStorage.setItem('filmCatalogueMode', 'demo');
+      setDatabaseReady(true);
     } finally {
       setCheckingDatabase(false);
     }

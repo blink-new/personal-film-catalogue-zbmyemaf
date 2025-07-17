@@ -109,9 +109,10 @@ export function Library() {
       });
       setMovies(movieList);
     } catch (error) {
-      console.error('Failed to load movies:', error);
-      // Set empty array when database is not available
-      setMovies([]);
+      console.error('Failed to load movies, falling back to demo mode:', error);
+      // Automatically enable demo mode and use demo data
+      localStorage.setItem('filmCatalogueMode', 'demo');
+      setMovies(demoMovies);
     } finally {
       setLoading(false);
     }

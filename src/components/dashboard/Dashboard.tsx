@@ -86,21 +86,13 @@ export function Dashboard() {
       setStats(libraryStats);
       setRecentMovies(movies.slice(0, 6));
     } catch (error) {
-      console.error('Failed to load dashboard data:', error);
+      console.error('Failed to load dashboard data, falling back to demo mode:', error);
       
-      // Set empty stats when database is not available
-      const emptyStats: LibraryStats = {
-        totalMovies: 0,
-        totalSize: 0,
-        genres: {},
-        formats: {},
-        qualities: {},
-        recentlyAdded: [],
-        mostWatched: []
-      };
-      
-      setStats(emptyStats);
-      setRecentMovies([]);
+      // Automatically enable demo mode and use demo data
+      localStorage.setItem('filmCatalogueMode', 'demo');
+      const demoStats = getDemoStats();
+      setStats(demoStats);
+      setRecentMovies(demoMovies.slice(0, 6));
     } finally {
       setLoading(false);
     }

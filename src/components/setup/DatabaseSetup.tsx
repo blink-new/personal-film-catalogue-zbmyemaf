@@ -82,7 +82,7 @@ export function DatabaseSetup() {
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             <strong>Database setup is temporarily unavailable</strong> due to system limits. 
-            You can still explore the app interface and functionality.
+            The app will automatically use demo mode with sample data so you can explore all features.
           </AlertDescription>
         </Alert>
 
